@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # CI Vuln Lab — CodeIgniter 3.1.0 Vulnerable Practice App
 
 ⚠️ **PERINGATAN KERAS**
@@ -104,3 +105,7 @@ jaringan di level VM (security group / firewall) — jangan andalkan bind
 Proyek ini dibuat murni untuk edukasi dan pengujian keamanan di environment
 yang kamu kontrol sendiri. Penulis tidak bertanggung jawab atas
 penyalahgunaan di luar konteks tersebut.
+=======
+# ci-vuln-lab
+Cyberdril App Lab
+>>>>>>> origin/main
