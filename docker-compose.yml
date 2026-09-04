@@ -1,0 +1,35 @@
+services:
+  web:
+    build: .
+    container_name: ci-vuln-lab-web
+    ports:
+      # Sengaja hanya bind ke 127.0.0.1 -> tidak bisa diakses dari luar host
+      - "127.0.0.1:8088:80"
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - vulnlab
+
+  db:
+    image: mysql:5.7
+    container_name: ci-vuln-lab-db
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: ci_vuln_lab
+      MYSQL_USER: vulnlab
+      MYSQL_PASSWORD: vulnlab
+    volumes:
+      - ./schema.sql:/docker-entrypoint-initdb.d/schema.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-prootpass"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - vulnlab
+    # Tidak ada 'ports:' di sini -> DB tidak exposed ke host sama sekali
+
+networks:
+  vulnlab:
+    driver: bridge

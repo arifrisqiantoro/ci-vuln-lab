@@ -1,0 +1,8 @@
+uploads/*
+!uploads/.gitkeep
+system/logs/*
+application/logs/*
+*.log
+.env
+vendor/
+node_modules/
