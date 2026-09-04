@@ -10,8 +10,6 @@ RUN a2enmod rewrite
 RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
 
 # Folder khusus untuk session files (terpisah dari /tmp sistem)
-RUN mkdir -p /var/www/sessions && chown -R www-data:www-data /var/www/sessions
-
 # FIX: CodeIgniter 3 memvalidasi session ID dengan regex 40 karakter hex
 # (format lama SHA-1), tapi PHP 7.1+ menghapus ini session.hash_function
 # yang dulu dipakai CI3 untuk generate ID sepanjang itu. Tanpa ini, CI3
@@ -25,8 +23,11 @@ RUN { \
 # Copy source code lab ke webroot Apache
 COPY . /var/www/html/
 
-# Pastikan folder uploads & sessions writable oleh Apache
-RUN chown -R www-data:www-data /var/www/html/uploads /var/www/sessions
+# Pastikan folder uploads, sessions, logs & cache writable oleh Apache
+# (HARUS setelah COPY, biar ownership-nya gak ketiban ulang oleh COPY)
+RUN mkdir -p /var/www/html/uploads /var/www/sessions /var/www/html/application/logs /var/www/html/application/cache \
+    && chown -R www-data:www-data /var/www/html/uploads /var/www/sessions /var/www/html/application/logs /var/www/html/application/cache \
+    && chmod -R 775 /var/www/html/application/logs /var/www/html/application/cache
 
 # AllowOverride All supaya .htaccess CodeIgniter jalan
 RUN sed -i 's/AllowOverride None/AllowOverride All/g' /etc/apache2/apache2.conf
